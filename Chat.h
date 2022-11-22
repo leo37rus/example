@@ -4,7 +4,7 @@
 #include<memory>
 #include"Message.h"
 
-class Chat { // Здесь был Миша
+class Chat {
 	//изменять название переменных???
 	bool isChatWork_ = false;
 	std::vector<User> users_;
