@@ -5,6 +5,7 @@
 #include"Message.h"
 
 class Chat {
+	//изменять название переменных???
 	bool isChatWork_ = false;
 	std::vector<User> users_;
 	std::vector<Message> messages_;
