@@ -1,11 +1,13 @@
-#include "Chat.h"
+#include <iostream>
+#include "ChatCrab.h"
+
 
 int main() {
-
-	//start
-
-	//menu loop login
-	//->user menu
+	setlocale(LC_ALL, "ru");
+	
+	Chat chat;//создание объекта чат
+	chat.start(); // startAChat
+	chat.show_login_menu();
 
 	return 0;
 }
