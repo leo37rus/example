@@ -2,7 +2,7 @@
 #include <string>
 class User
 {
-	std::string login_;
+	const std::string login_; //логин нельзя менять
 	std::string password_;
 	std::string name_;
 
