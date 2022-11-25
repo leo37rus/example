@@ -11,7 +11,7 @@ class Chat
 	std::vector<Message> messages_;
 	std::shared_ptr<User> currentUser_ = nullptr; //текущий пользователь
 
-	void reg_Chat();//регестрация в чате
+	void reg_Chat();//регистрация в чате
 	void log_Chat();// вход в чат
 	void show_Chat() const;//показать чат
 	void show_All_Users() const;// показать всех пользователей
@@ -19,8 +19,8 @@ class Chat
 
 	std::vector<User>& get_All_Users() { return users_; }//получить список пользователей
 	std::vector<Message>& get_All_Messages() { return messages_; }// получить все сообщения
-	std::shared_ptr<User> get_user_by_login(const std::string& login) const;//getAUserLogin
-	std::shared_ptr<User> get_user_by_name(const std::string& name) const;//getAUserName
+	std::shared_ptr<User> get_user_by_login(const std::string& login) const;//геттер логина активного пользователя
+	std::shared_ptr<User> get_user_by_name(const std::string& name) const;//геттер имени активного пользователя
 public:
 	void start() {workChat_ = true;}
 	bool workChat() const { return workChat_; }
