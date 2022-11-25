@@ -10,9 +10,9 @@ public:
 	User( const std::string &login, const std::string& password, const std::string& name)
 		:login_(login), password_(password), name_(name) {}
 
-	const std::string& get_user_login() { return login_; }
-	const std::string& getUserPassword() { return password_; }
+	const std::string& get_user_login() const { return login_; }
+	const std::string& getUserPassword() const { return password_; }
 	void setUserPassword(const std::string& password) { password_ = password; }
-	const std::string& getUserName() { return name_; }
+	const std::string& getUserName() const { return name_; }
 	void setUserName(const std::string& name) { name_ = name; }
 };

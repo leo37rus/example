@@ -4,6 +4,16 @@
 #include"Message.h"
 #include"User.h"
 
+struct UserLoginExp : public std::exception
+{
+    const char *what()const noexcept override {return "error: user login is busy";}
+};
+
+struct UserNameExp : public std::exception
+{
+    const char *what()const noexcept override {return "error: user name is busy";}
+};
+
 class Chat
 {
 	bool workChat_ = false; //WorkChat_ isChatWork_
@@ -24,8 +34,8 @@ class Chat
 public:
     void start();
 	bool workChat() const { return workChat_; }
-	std::shared_ptr<User> getCurrentUser() const { return currentUser_; }
-	void show_login_menu();
-	void showUserMenu();
+	std::shared_ptr<User> get_Current_User() const { return currentUser_; }
+	void show_Log_Menu();
+	void show_User_Menu();
 
 };
