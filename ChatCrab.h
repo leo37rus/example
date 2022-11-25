@@ -22,7 +22,7 @@ class Chat
 	std::shared_ptr<User> get_user_by_login(const std::string& login) const;//геттер логина активного пользователя
 	std::shared_ptr<User> get_user_by_name(const std::string& name) const;//геттер имени активного пользователя
 public:
-	void start() {workChat_ = true;}
+    void start();
 	bool workChat() const { return workChat_; }
 	std::shared_ptr<User> getCurrentUser() const { return currentUser_; }
 	void show_login_menu();
