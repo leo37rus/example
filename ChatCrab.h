@@ -1,33 +1,29 @@
 #pragma once
 #include<vector>
 #include<exception>
-#include<memory>
 #include"Message.h"
-
+#include"User.h"
 
 class Chat
 {
-	bool WorkChat_ = false; //WorkChat_ isChatWork_
-	std::vector<User> AllUsers_;// users_ AllUsers_
+	bool workChat_ = false; //WorkChat_ isChatWork_
+	std::vector<User> users_;// users_ AllUsers_
 	std::vector<Message> messages_;
 	std::shared_ptr<User> currentUser_ = nullptr; //текущий пользователь
 
-	void registration_in_the_chat();//регестрация в чате
-	void log_ln_to_the_chat();// вход в чат
-	
-	void show_chat() const;//показать чат
+	void reg_Chat();//регестрация в чате
+	void log_Chat();// вход в чат
+	void show_Chat() const;//показать чат
+	void show_All_Users() const;// показать всех пользователей
+	void add_Message();//добавить сообщение
 
-	void show_all_users_name() const;// показать всех пользователей
-
-	void add_message();//добавить сообщение
-
-	std::vector<User>& get_all_users() { return AllUsers_; }//получить список пользователей
-	std::vector<Message>& get_all_messages() { return messages_; }// получить все сообщения
+	std::vector<User>& get_All_Users() { return users_; }//получить список пользователей
+	std::vector<Message>& get_All_Messages() { return messages_; }// получить все сообщения
 	std::shared_ptr<User> get_user_by_login(const std::string& login) const;//getAUserLogin
 	std::shared_ptr<User> get_user_by_name(const std::string& name) const;//getAUserName
 public:
-	void start() {WorkChat_ = true;}
-	bool isChatWork() const { return WorkChat_; }
+	void start() {workChat_ = true;}
+	bool workChat() const { return workChat_; }
 	std::shared_ptr<User> getCurrentUser() const { return currentUser_; }
 	void show_login_menu();
 	void showUserMenu();

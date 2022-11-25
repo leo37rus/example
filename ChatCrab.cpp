@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "ChatCrab.h"
 #include "string"
 #include <stdio.h>
@@ -10,7 +10,7 @@ using namespace std;
 void login();
 std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const {
 	//вдресат по логину
-	for (auto user : AllUsers_)// было  пишет ошибка - беспокоит &------------------------------------
+	for (auto user : users_)// было  пишет ошибка - беспокоит &------------------------------------
 		//for (User user : users_) // https://metanit.com/cpp/tutorial/7.2.php
 	{
 		if (login == user.get_user_login())//бежит по массиву проверяет 
@@ -31,7 +31,7 @@ void Chat::show_login_menu() {//реализовать выбор языка??
 	switch (operation)
 	{
 	case '1'://регистрация
-		registration_in_the_chat();
+		regInChat();
 		break;
 	case '2'://войти в чат
 		void log_ln_to_the_chat();// вход в чат-----------
@@ -44,7 +44,7 @@ void Chat::show_login_menu() {//реализовать выбор языка??
 	}
 }
 
-void Chat::registration_in_the_chat() {//регестрация
+void Chat::regInChat() {//регестрация
 	string login;
 	string password;//такое объявление не трогать в варианте через запятую не пашет -_-
 	string name;
@@ -71,9 +71,9 @@ void Chat::registration_in_the_chat() {//регестрация
 
 	//создание объекта юзер 
 	User user=User(login, password, name);
-	AllUsers_.push_back(user);//добоаление в список юзеров vector<User> AllUsers_
+	users_.push_back(user);//добоаление в список юзеров vector<User> AllUsers_
 	//currentUser_ = std::make_shared<User>(&user);//& серый указатель на текущего пользователя
-	cout << "size(AllUsers_)количество пользователей " << size(AllUsers_) << std::endl;
+	cout << "size(AllUsers_)количество пользователей " << size(users_) << std::endl;
 	}
 	
 	//vector::push_back	Вставка элемента в конец вектора
@@ -81,7 +81,7 @@ void Chat::registration_in_the_chat() {//регестрация
 	//сосладся на вход в чат(вход успешен) показать чат
 	}
 	
-void Chat::log_ln_to_the_chat() {
+void Chat::logInChat() {
 	std::string login, password;
 	//char operation;// option//для закрытия 
 
@@ -105,7 +105,7 @@ void Chat::log_ln_to_the_chat() {
 	//сосладся на вход в чат(вход успешен) показать чат
 }
 
-void Chat::show_chat() const {//показать чат vector::sizeВозвращает количество элементов в векторе
+void Chat::showChat() const {//показать чат vector::sizeВозвращает количество элементов в векторе
 
 	//вывод чата с заменой имени текущего пользователя на (me)
 	//  и проверкой что доступно текущему юзеру std::vector<Message> messages_; проверка на аll
@@ -119,12 +119,12 @@ void Chat::show_chat() const {//показать чат vector::sizeВозвра
 	//отправить сообщение всем сослаться
 	//выход 
 }
-void Chat::show_all_users_name() const {//покозать всех пользователей
+void Chat::showAllUsersName() const {//покозать всех пользователей
 	// получить имя текущего пользователя
 	//вывод vector<User> AllUsers_ только миена
 	//если имя текущего пользователя совпадает с именем из списка радом написать (me)
 }
-void Chat::add_message() {
+void Chat::addMessage() {
 	//получение имени текущего пользователя и запись в const std::string _from;//откуда
 	
 	//ввод кому 
