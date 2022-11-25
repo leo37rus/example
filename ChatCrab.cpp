@@ -10,7 +10,7 @@ using namespace std;
 void login();
 std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const {
 	//вдресат по логину
-	for (auto user : AllUsers_)//в видео было  пишет ошибка - беспокоит &------------------------------------
+	for (auto user : AllUsers_)// было  пишет ошибка - беспокоит &------------------------------------
 		//for (User user : users_) // https://metanit.com/cpp/tutorial/7.2.php
 	{
 		if (login == user.get_user_login())//бежит по массиву проверяет 
@@ -72,7 +72,7 @@ void Chat::registration_in_the_chat() {//регестрация
 	//создание объекта юзер 
 	User user=User(login, password, name);
 	AllUsers_.push_back(user);//добоаление в список юзеров vector<User> AllUsers_
-	//currentUser_ = std::make_shared<User>(&user);//& -  в идео серый
+	//currentUser_ = std::make_shared<User>(&user);//& серый указатель на текущего пользователя
 	cout << "size(AllUsers_)количество пользователей " << size(AllUsers_) << std::endl;
 	}
 	
