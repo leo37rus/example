@@ -5,12 +5,12 @@
 #include<vector>
 #include<string>
 #include <iostream>
-using namespace std;
 
 void login();
-std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const {
+std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const 
+{
 	//вдресат по логину
-	for (auto user : AllUsers_)// было  пишет ошибка - беспокоит &------------------------------------
+	for (auto& user : AllUsers_)//в видео было  пишет ошибка - беспокоит &------------------------------------
 		//for (User user : users_) // https://metanit.com/cpp/tutorial/7.2.php
 	{
 		if (login == user.get_user_login())//бежит по массиву проверяет 
@@ -18,9 +18,10 @@ std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const {
 	}
 	return nullptr;
 }
-std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const {//нужно для ошибок-----------------------------------------
+std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const 
+{//нужно для ошибок-----------------------------------------этой функции не было 
 	//адресат по имени, 
-	for (auto user : AllUsers_)// в видео было так не компилируется -----------------------------------------
+	for (auto& user : AllUsers_)// в видео было так не компилируется -----------------------------------------
 		//for (User user : users_)
 	{
 		if (name == user.getUserName())//бежит по массиву проверяет 
@@ -28,70 +29,117 @@ std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const {//�
 	}
 	return nullptr;
 }
-void Chat::show_login_menu() {//реализовать выбор языка??
-	currentUser_ = nullptr;
-	char operation;// option
 
-	std::cout << "здравствуй, хочешь войти или зарегистрироваться?" << std::endl;
-	std::cout << "1 - зарегистрироваться" << std::endl;
-	std::cout << "2 - войти в чат" << std::endl;
-	std::cout << "0 - закрыть чат" << std::endl;
-	std::cin>> operation;
-	//цикл
-	switch (operation)
-	{
-	case '1'://регистрация
-		registration_in_the_chat();
-		break;
-	case '2'://войти в чат
-		void log_ln_to_the_chat();// вход в чат-----------
-		break;
-	case '0'://закрыть чат
+void Chat::show_login_menu()
+{//реализовать выбор языка??
+	
+		currentUser_ = nullptr;
+		char operation;
 
-		break;
-	default:
-		break;
-	}
+		setlocale(LC_ALL, "Russian");
+		do
+		{
+			std::cout << "здравствуй, хочешь войти или зарегистрироваться?" << std::endl;
+			std::cout << "1 - зарегистрироваться" << std::endl;
+			std::cout << "2 - войти в чат" << std::endl;
+			std::cout << "0 - закрыть чат" << std::endl << std::endl;
+			std::cin >> operation;
+			//цикл
+			switch (operation)
+			{
+			case '1'://регистрация
+				try
+				{
+					registration_in_the_chat();					
+				}
+				catch (UserLoginExp& a)
+				{//ловит
+					CAT();
+					std::cout << "поймал UserLoginExp" << std::endl;
+					std::cout << "UserLoginExp пользователь с таким логином уже существует" << std::endl;
+					std::cout << a.what() << std::endl;//спросил что случилось 
+					show_login_menu();//---------------- не знаю освобождается ли стек ??? или не возникает ли рекурсия
+				}
+				catch (UserNameExp& a)
+				{//ловит
+					CAT();
+					std::cout << "поймал UserNameExp" << std::endl;
+					std::cout << "UserNameExp пользователь с таким менем уже существует" << std::endl; //но можно так
+					std::cout << a.what() << std::endl << std::endl;//спросил что случилось 
+					show_login_menu(); //---------------- не знаю освобождается ли стек ??? или не возникает ли рекурсия
+				}
+				catch (std::exception& a)
+				{//ловит
+					CAT();
+					std::cout << "поймал exception" << std::endl << std::endl;
+					std::cout << a.what() << std::endl;//спросил что случилось
+					show_login_menu();//---------------- не знаю освобождается ли стек ??? или не возникает ли рекурсия
+				}
+				catch (...)
+				{//ловит все вообще
+
+					std::cout << "что то пошло не так!!              (/)__0о__(/)" << std::endl << std::endl;
+					show_login_menu();
+				}
+
+				break;
+			case '2'://войти в чат
+				log_ln_to_the_chat();// вход в чат-----------
+				break;
+			case '0'://закрыть чат
+				WorkChat_ = false;
+				break;
+			default:
+				std::cout << "Неизвестный выбор" << std::endl;				
+				break;
+			}
+		} while (!currentUser_ && WorkChat_);
 }
 
-void Chat::registration_in_the_chat() {//регестрация
-	string login;
-	string password;//такое объявление не трогать в варианте через запятую не пашет -_-
-	string name;
+void Chat::registration_in_the_chat()
+{//регистрация
+	std::string login;
+	std::string password;//такое объявление не трогать в варианте через запятую не пашет -_-
+	std::string name;
 	//char operation;// option
-
-	for (size_t i = 0; i < 4; i++) //проверочный цыкл на работоспособнось вектора AllUsers_ 
+	for (size_t i = 0; i < 2; i++)
 	{
-	//цикл
-	std::cout << "вы выбрали 1 - зарегистрироваться" << std::endl;
-	std::cout << "введите ваш логин" << std::endl;
-	std::cin >> login; std::cout << std::endl;
-	//проверка на  занятость логина по vector<User> AllUsers_
-	//если занят выдать ошибку
-	std::cout << "введите ваш пороль" << std::endl;
-	std::cin >> password; std::cout << std::endl;
-	std::cout << "введите ваш имя" << std::endl;
-	std::cin >> name; std::cout << std::endl;
-	//проверка на  занятость имени по vector<User> AllUsers_
-	//если занят выдать ошибку
+		//цикл
+		std::cout << "вы выбрали 1 - зарегистрироваться" << std::endl;
+		std::cout << "введите ваш логин" << std::endl;
+		std::cin >> login;
 
-	//std::cout << "0 - закрыть чат" << std::endl;
-	//std::cin >> operation;
-	
+		if (get_user_by_login(login) || login == "all")
+		{
+			throw UserLoginExp();//кинул 
+		}
+		//проверка на  занятость логина по vector<User> AllUsers_
+		//если занят выдать ошибку
+		std::cout << "введите ваш имя" << std::endl;
+		std::cin >> name;
+		if (get_user_by_name(name) || name == "all")
+		{
+			throw UserNameExp();
+		}
+		std::cout << "введите ваш пороль" << std::endl;
+		std::cin >> password;
 
-	//создание объекта юзер 
-	User user=User(login, password, name);
-	AllUsers_.push_back(user);//добоаление в список юзеров vector<User> AllUsers_
-	//currentUser_ = std::make_shared<User>(&user);//& серый указатель на текущего пользователя
-	cout << "size(AllUsers_)количество пользователей " << size(AllUsers_) << std::endl;
+		//проверка на  занятость имени по vector<User> AllUsers_
+		//если занят выдать ошибку
+
+		//std::cout << "0 - закрыть чат" << std::endl;
+		//std::cin >> operation;
+
+		//создание объекта юзер 
+		User user = User(login, password, name);
+		AllUsers_.push_back(user);//добоаление в список юзеров vector<User> AllUsers_
+		//currentUser_ = std::make_shared<User>(&user);//& -  в идео серый
+		std::cout << "size(AllUsers_)количество пользователей " << size(AllUsers_) << std::endl;
+		currentUser_ = std::make_shared<User>(user);
 	}
-	
-	//vector::push_back	Вставка элемента в конец вектора
-	// https://ru.wikipedia.org/wiki/Vector_(C%2B%2B)
-	//сосладся на вход в чат(вход успешен) показать чат
-	}
-	
-void Chat::log_ln_to_the_chat() {
+}	
+void Chat::log_ln_to_the_chat() 
+{
 	std::string login, password;
 	//char operation;// option//для закрытия 
 
@@ -115,7 +163,8 @@ void Chat::log_ln_to_the_chat() {
 	//сосладся на вход в чат(вход успешен) показать чат
 }
 
-void Chat::show_chat() const {//показать чат vector::sizeВозвращает количество элементов в векторе
+void Chat::show_chat() const 
+{//показать чат vector::sizeВозвращает количество элементов в векторе
 
 	//вывод чата с заменой имени текущего пользователя на (me)
 	//  и проверкой что доступно текущему юзеру std::vector<Message> messages_; проверка на аll
@@ -129,12 +178,14 @@ void Chat::show_chat() const {//показать чат vector::sizeВозвра
 	//отправить сообщение всем сослаться
 	//выход 
 }
-void Chat::show_all_users_name() const {//покозать всех пользователей
+void Chat::show_all_users_name() const 
+{//покозать всех пользователей
 	// получить имя текущего пользователя
 	//вывод vector<User> AllUsers_ только миена
 	//если имя текущего пользователя совпадает с именем из списка радом написать (me)
 }
-void Chat::add_message() {
+void Chat::add_message() 
+{
 	//получение имени текущего пользователя и запись в const std::string _from;//откуда
 	
 	//ввод кому 
@@ -146,7 +197,8 @@ void Chat::add_message() {
 	//запись в std::vector<Message> messages_;
 }
 
-void Chat::CAT() {
+void Chat::CAT() 
+{
 
 
 	std::cout << "____________________________________________________" << std::endl;
