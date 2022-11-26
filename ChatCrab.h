@@ -4,6 +4,15 @@
 #include<memory>
 #include"Message.h"
 
+struct UserLoginExp : public std::exception
+{
+	const char* what() const noexcept override { return "error: login is busy"; }
+	
+};
+struct UserNameExp : public std::exception
+{
+	const char* what() const noexcept override { return "error: Name is busy"; }
+};
 
 class Chat
 {
