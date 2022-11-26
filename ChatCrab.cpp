@@ -18,7 +18,7 @@ std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const {
 	}
 	return nullptr;
 }
-std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const {//нужно для ошибок-----------------------------------------этой функции не было 
+std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const {//нужно для ошибок-----------------------------------------
 	//адресат по имени, 
 	for (auto user : AllUsers_)// в видео было так не компилируется -----------------------------------------
 		//for (User user : users_)
