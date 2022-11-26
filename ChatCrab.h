@@ -31,5 +31,5 @@ public:
 	std::shared_ptr<User> getCurrentUser() const { return currentUser_; }
 	void show_login_menu();
 	void showUserMenu();
-
+	void CAT();
 };
