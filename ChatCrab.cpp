@@ -18,6 +18,16 @@ std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const {
 	}
 	return nullptr;
 }
+std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const {//нужно для ошибок-----------------------------------------этой функции не было 
+	//адресат по имени, 
+	for (auto user : AllUsers_)// в видео было так не компилируется -----------------------------------------
+		//for (User user : users_)
+	{
+		if (name == user.getUserName())//бежит по массиву проверяет 
+			return std::make_shared<User>(user);
+	}
+	return nullptr;
+}
 void Chat::show_login_menu() {//реализовать выбор языка??
 	currentUser_ = nullptr;
 	char operation;// option
