@@ -28,7 +28,7 @@ int main()
 			std::cout << "\033[33m\t Неизвестный выбор\033[37m" << std::endl;
 			break;
 		}
-	} while ((chat.get_language() == '1') && (chat.get_language() == '2'));
+	} while (language!='1' && language != '2');
 	
     chat.start(); 
 
