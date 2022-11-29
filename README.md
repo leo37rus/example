@@ -1,10 +1,10 @@
 _______Список участников команды:_______
-Kate Smirnova
-Cherny Oleg
-Mikhail Belugin
+- Kate Smirnova
+- Cherny Oleg
+- Mikhail Belugin
 
 _______Имя тимлида (по желанию):_______
-Kate Smirnova
+- Kate Smirnova
 
 _______Описание выбранной идеи решения:_______
 Нарисована модель основной логики  в Visio. ссылка
