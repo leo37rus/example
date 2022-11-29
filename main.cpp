@@ -9,7 +9,7 @@ int main()
 
 	do
 	{
-		std::cout << "\033[33m\tВыбкркте язык/Select a language" << std::endl;
+		std::cout << "\033[33m\t Выберите язык/Select a language" << std::endl;
 		std::cout << "1 - Русский" << std::endl;
 		std::cout << "2 - English\033[37m" << std::endl;
 		std::cin >> language;
@@ -17,15 +17,15 @@ int main()
 		switch (language)
 		{
 		case '1':
-			std::cout << "\033[33m \t вы выбрали (1) - Русский\033[37m" << std::endl;
+			std::cout << "\033[33m \t Вы выбрали (1) - Русский\033[37m" << std::endl;
 			chat.set_language(language);
 			break;
 		case '2':
-			std::cout << "\033[33m\tyou have chosen (2) - English\033[37m" << std::endl;
+			std::cout << "\033[33m\t You have chosen (2) - English\033[37m" << std::endl;
 			chat.set_language(language);
 			break;
 		default:
-			std::cout << "\033[33m\tНеизвестный выбор\033[37m" << std::endl;
+			std::cout << "\033[33m\t Неизвестный выбор\033[37m" << std::endl;
 			break;
 		}
 	} while ((chat.get_language() == '1') && (chat.get_language() == '2'));
