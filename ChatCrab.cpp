@@ -1,217 +1,382 @@
 ﻿#include <iostream>
 #include "ChatCrab.h"
 #include "string"
-#include <stdio.h>
 #include<vector>
 #include<string>
 #include <iostream>
+#include <windows.h>
+
 
 void login();
-std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const 
+std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const
 {
-	//вдресат по логину
-	for (auto& user : AllUsers_)//в видео было  пишет ошибка - беспокоит &------------------------------------
-		//for (User user : users_) // https://metanit.com/cpp/tutorial/7.2.php
+	for (auto& user : AllUsers_)
 	{
-		if (login == user.get_user_login())//бежит по массиву проверяет 
-			return std::make_shared<User>(user);//получаем указатель по логину
+		if (login == user.get_user_login())
+			return std::make_shared<User>(user);
 	}
 	return nullptr;
 }
-std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const 
-{//нужно для ошибок-----------------------------------------этой функции не было 
-	//адресат по имени, 
-	for (auto& user : AllUsers_)// в видео было так не компилируется -----------------------------------------
-		//for (User user : users_)
+
+std::shared_ptr<User> Chat::get_user_by_name(const std::string& name) const
+{
+	for (auto& user : AllUsers_)
 	{
-		if (name == user.getUserName())//бежит по массиву проверяет 
+		if (name == user.getUserName())
 			return std::make_shared<User>(user);
 	}
 	return nullptr;
 }
 
 void Chat::show_login_menu()
-{//реализовать выбор языка??
+{
+	setlocale(LC_ALL, "Russian");
+	currentUser_ = nullptr;
+	char operation='a';
 	
-		currentUser_ = nullptr;
-		char operation;
-
-		setlocale(LC_ALL, "Russian");
-		do
-		{
-			std::cout << "здравствуй, хочешь войти или зарегистрироваться?" << std::endl;
+	do
+	{
+		if (language_ == '1') {std::cout << "\033[33m Здравствуй, хочешь войти или зарегистрироваться?" << std::endl;
 			std::cout << "1 - зарегистрироваться" << std::endl;
 			std::cout << "2 - войти в чат" << std::endl;
-			std::cout << "0 - закрыть чат" << std::endl << std::endl;
-			std::cin >> operation;
-			//цикл
-			switch (operation)
-			{
-			case '1'://регистрация
-				try
-				{
-					registration_in_the_chat();					
-				}
-				catch (UserLoginExp& a)
-				{//ловит
-					CAT();
-					std::cout << "поймал UserLoginExp" << std::endl;
-					std::cout << "UserLoginExp пользователь с таким логином уже существует" << std::endl;
-					std::cout << a.what() << std::endl;//спросил что случилось 
-					show_login_menu();//---------------- не знаю освобождается ли стек ??? или не возникает ли рекурсия
-				}
-				catch (UserNameExp& a)
-				{//ловит
-					CAT();
-					std::cout << "поймал UserNameExp" << std::endl;
-					std::cout << "UserNameExp пользователь с таким менем уже существует" << std::endl; //но можно так
-					std::cout << a.what() << std::endl << std::endl;//спросил что случилось 
-					show_login_menu(); //---------------- не знаю освобождается ли стек ??? или не возникает ли рекурсия
-				}
-				catch (std::exception& a)
-				{//ловит
-					CAT();
-					std::cout << "поймал exception" << std::endl << std::endl;
-					std::cout << a.what() << std::endl;//спросил что случилось
-					show_login_menu();//---------------- не знаю освобождается ли стек ??? или не возникает ли рекурсия
-				}
-				catch (...)
-				{//ловит все вообще
+			std::cout << "0 - закрыть чат\033[37m" << std::endl << std::endl;}
+		else {std::cout << "\033[33m hello, do you want to log in or register?" << std::endl;
+			std::cout << "1 - register" << std::endl;
+			std::cout << "2 - log in to the chat" << std::endl;
+			std::cout << "0 - close the chat\033[37m" << std::endl << std::endl;}
 
-					std::cout << "что то пошло не так!!              (/)__0о__(/)" << std::endl << std::endl;
-					show_login_menu();
-				}
+		std::cin >> operation;
+		
+		switch (operation)
+		{
+		case '1':
+			registration_in_the_chat();
+			break;
+		case '2':
+			log_ln_to_the_chat();
+			break;
+		case '0':
+			WorkChat_ = false;
+			break;
+		default:
+			if (language_ == '1') { std::cout << "\033[33m Неизвестный выбор\033[37m" << std::endl; }
+			else{ std::cout << "\033[33m Unknown choice\033[37m" << std::endl; }
+			break;
+		}
+	} while (!currentUser_ && WorkChat_);
+}
 
-				break;
-			case '2'://войти в чат
-				log_ln_to_the_chat();// вход в чат-----------
-				break;
-			case '0'://закрыть чат
-				WorkChat_ = false;
-				break;
-			default:
-				std::cout << "Неизвестный выбор" << std::endl;				
-				break;
-			}
-		} while (!currentUser_ && WorkChat_);
+void Chat::showUserMenu()
+{
+	char operation;
+
+	if (language_ == '1') {std::cout << "\033[33mПривет, " << currentUser_->getUserName() << "\033[37m" << std::endl;}
+	else {std::cout <<"\033[33m Hi, " << currentUser_->getUserName()<<"\033[37m" << std::endl; }
+
+	while (currentUser_)
+	{ 
+		if (language_ == '1') {std::cout << "\033[33m \tменю: (1) Показать сообщения | (2) Написать сообщение | (3) Пользователи | (0) Выйти\033[37m";}
+		else {std::cout << "\033[33m \tMenu:(1) Show Messages | (2) Write a Message | (3) Users | (0) Log out\033[37m";}
+
+		std::cout << std::endl;
+		std::cin >> operation;
+
+		switch (operation)
+		{
+		case '1':
+			show_chat();
+			break;
+		case '2':
+			menu_message();
+			break;
+		case '3':
+			show_all_users_name();
+			break;
+		case'0':
+			currentUser_ = nullptr;
+			break;
+		default:
+			if (get_language() == '1') {std::cout << "\033[33m Неизвестный выбор, выберите действие от 1, 2, 3, 0\033[37m" << std::endl;}
+			else {std::cout << "\033[33m Unknown selection, choose an action from 1, 2, 3, 0\033[37m" << std::endl;}
+			break;
+		}
+	}
 }
 
 void Chat::registration_in_the_chat()
-{//регистрация
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	
 	std::string login;
-	std::string password;//такое объявление не трогать в варианте через запятую не пашет -_-
+	std::string password;
 	std::string name;
-	//char operation;// option
-	for (size_t i = 0; i < 2; i++)
-	{
-		//цикл
-		std::cout << "вы выбрали 1 - зарегистрироваться" << std::endl;
-		std::cout << "введите ваш логин" << std::endl;
+
+	if (language_ == '1') {std::cout << "\033[33mвы выбрали 1 - зарегистрироваться" << std::endl;
+		std::cout << "\033[34m введите ваш логин\033[37m" << std::endl;}
+	else {std::cout << "\033[33m you have chosen 1 - register" << std::endl;
+		std::cout << "\033[34m enter your login\033[37m" << std::endl;}
+
 		std::cin >> login;
 
-		if (get_user_by_login(login) || login == "all")
-		{
-			throw UserLoginExp();//кинул 
-		}
-		//проверка на  занятость логина по vector<User> AllUsers_
-		//если занят выдать ошибку
-		std::cout << "введите ваш имя" << std::endl;
+		if (get_user_by_login(login) || login == "всем")
+		{throw UserLoginExp();}
+
+		if (language_ == '1') {std::cout << "\033[34m введите ваше имя\033[37m" << std::endl;}
+		else
+		{std::cout << "\033[34m enter your name\033[37m" << std::endl;}
+
 		std::cin >> name;
-		if (get_user_by_name(name) || name == "all")
-		{
-			throw UserNameExp();
-		}
-		std::cout << "введите ваш пороль" << std::endl;
+		if (get_user_by_name(name) || name == "всем")
+		{throw UserNameExp();}
+
+		if (language_ == '1') {std::cout << "\033[34m введите ваш пароль\033[37m" << std::endl;}
+		else{std::cout << "\033[34m enter your password\033[37m" << std::endl;}
+
 		std::cin >> password;
 
-		//проверка на  занятость имени по vector<User> AllUsers_
-		//если занят выдать ошибку
-
-		//std::cout << "0 - закрыть чат" << std::endl;
-		//std::cin >> operation;
-
-		//создание объекта юзер 
 		User user = User(login, password, name);
-		AllUsers_.push_back(user);//добоаление в список юзеров vector<User> AllUsers_
-		//currentUser_ = std::make_shared<User>(&user);//& -  в идео серый
-		std::cout << "size(AllUsers_)количество пользователей " << size(AllUsers_) << std::endl;
+		AllUsers_.push_back(user);
+
+		if (language_ == '1') {std::cout << "\033[33m количество пользователей " << size(AllUsers_) << "\033[37m" << std::endl;
+		}
+		else{std::cout << "\033[33m number of users " << size(AllUsers_) <<"\033[37m" << std::endl; }
+
 		currentUser_ = std::make_shared<User>(user);
-	}
-}	
-void Chat::log_ln_to_the_chat() 
+}
+
+void Chat::log_ln_to_the_chat()
 {
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251); 
 	std::string login, password;
-	//char operation;// option//для закрытия 
+	char operation;
 
-	//войти в чат
-	//ввод логина
-	//ввод пороля
-	
-	//цикл
-	std::cout << "вы выбрали 2 - войти" << std::endl;
-	std::cout << "введите ваш логин" << std::endl;
-	std::cin >> login; std::cout << std::endl;
-	std::cout << "введите ваш пороль" << std::endl;
-	std::cin >> password; std::cout << std::endl;
-	
-	//std::cout << "0 - закрыть чат" << std::endl;
-	//std::cin >> operation;
+	do
+	{
+		if (language_ == '1') {std::cout << "\033[34m Введите логин: \033[37m";}
+		else {std::cout << "\033[33m Enter your login: \033[37m";}
 
-	//проерка правельности ввода по vector<User> AllUsers_
-	//если не верно вывести ошибку
+		std::cin >> login;
 
-	//сосладся на вход в чат(вход успешен) показать чат
+		if (language_ == '1') {std::cout << "\033[34m Введите пароль: \033[37m";}
+		else{std::cout << "\033[33m Enter the password: \033[37m";}
+
+		std::cin >> password;
+
+		currentUser_ = get_user_by_login(login);
+
+		if (currentUser_ == nullptr || (password != currentUser_->getUserPassword()))
+		{
+			if (language_ == '1') {std::cout << "\033[33m Неверный логин или пароль!!!" << std::endl;
+				std::cout << "Нажмите (0) чтобы выйти или любую клавишу для повтора: \033[37m" << std::endl;}
+			else {std::cout << "\033[33m Invalid username or password!!!" << std::endl;
+				std::cout << "Invalid username or password!!!Press (0) to exit or any key to repeat: \033[37m" << std::endl;}
+
+			std::cin >> operation;
+			currentUser_ = nullptr;
+			if (operation == 0)
+				break;
+		}
+	} while (!currentUser_);
 }
 
-void Chat::show_chat() const 
-{//показать чат vector::sizeВозвращает количество элементов в векторе
-
-	//вывод чата с заменой имени текущего пользователя на (me)
-	//  и проверкой что доступно текущему юзеру std::vector<Message> messages_; проверка на аll
-	//проверка личных сообщениий вывод в std::vector<Message> messages_; по const std::string _to;
-
-
-
-	//меню чата (видимо перенести в отдельное место)
-	//покозать всех пользователей вывести vector<User> AllUsers_ рядом со своим именем (me) void show_all_users_name() const;
-	//отправить сообщение кому-то сослаться void add_message();
-	//отправить сообщение всем сослаться
-	//выход 
-}
-void Chat::show_all_users_name() const 
-{//покозать всех пользователей
-	// получить имя текущего пользователя
-	//вывод vector<User> AllUsers_ только миена
-	//если имя текущего пользователя совпадает с именем из списка радом написать (me)
-}
-void Chat::add_message() 
+void Chat::show_chat() const
 {
-	//получение имени текущего пользователя и запись в const std::string _from;//откуда
-	
-	//ввод кому 
-	//проверка на наличее такого пользователя
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251); 
+	std::string from;
+	std::string to;
+	std::cout << "\033[31m\n";
+	std::cout << "                                                      .$$$' $.                .$ '$$$\n";
+	std::cout << "                                                      $$$. .$$                $$. .$$$.\n";
+	std::cout << "                                                      $$$$$$$$                 $$$$$$$$\n";
+	std::cout << "           $$                                         '$$$$$$      $     $      $$$$$$'\n";
+	std::cout << "           $$                                           '$$$$   .$$0$$$$$0$$$.   $$$$'\n";
+	std::cout << "           $$                 $$                          '$$..$$$$$$$$$$$$$$$$..$$'\n";
+	std::cout << "           $$                 $$                      .$$.  $$$$$$$$$$$$$$$$$$$$$$' .$$.\n";
+	std::cout << "  ..$$$$.  $$$$$$$.   .$$$.  $$$$$                  .$$''$$.:$$$$$$$$$$$$$$$$$$$$: $$  $$\n";
+	std::cout << " $$'    '$ $$'   '$$ '    $$  $$                    $'    :$$$$$$$$$$$$$$$$$$$$$$$$'    '$\n";
+	std::cout << "$$:        $$     $$ .$$$$$$  $$                    $ .$$$'  '$$$$$$$$$$$$$$$$$$'  .$$$. $\n";
+	std::cout << " $$.    .$ $$     $$ $   .$$  $$                     .$' '$$$$'$$$$$$$$$$$$$$$$'$$$$' '$\n";
+	std::cout << "  '$$$$$$' $$     $$ '$$$$ $$ '$$$$   2.1           $:       .$'$$$$$$$$$$$$'$.       '$\n";
+	std::cout << "                                                     '$     .$$$              '$$$.     $\n";
+	std::cout << "                                                            $'                   '$\n\033[37m";
 
-	//ввод текста
-	
-	//создать объекта 
-	//запись в std::vector<Message> messages_;
+	for (auto& mess : messages_)
+	{
+		if (currentUser_->get_user_login() == mess.getFrom() || currentUser_->get_user_login() == mess.getTo() || mess.getTo() == "всем")
+		{
+			if (language_ == '1') {from = (currentUser_->get_user_login() == mess.getFrom()) ? "меня" : get_user_by_login(mess.getFrom())->getUserName();}
+			else {from = (currentUser_->get_user_login() == mess.getFrom()) ? "me" : get_user_by_login(mess.getFrom())->getUserName();}
+
+			if (language_ == '1') {
+				if (mess.getTo() == "всем") { to = "всем"; }
+				else { to = (currentUser_->get_user_login() == mess.getTo()) ? "Я" : get_user_by_login(mess.getTo())->getUserName(); }
+			}
+			else {
+				if (mess.getTo() == "всем") { to = "all"; }
+				else { to = (currentUser_->get_user_login() == mess.getTo()) ? "Я" : get_user_by_login(mess.getTo())->getUserName(); }
+			}
+
+			if (language_ == '1') {std::cout << "\033[33m Сообщение от\033[34m " << from << " \033[37m" << to;
+				std::cout << " Текст:\033[37m " << mess.getText() << std::endl;}
+			else {std::cout << "\033[33mMessage from\033[34m [" << from << "]\033[37m to whom \033[37m" << to;
+				std::cout << "\033[34m Text: \033[37m" << mess.getText() << std::endl;}
+		}
+	}
+	std::cout << "\033[31m\n";
+	std::cout << "             .$$$$$$$.             .$$$$$$$.           .$$$$$$$. " << std::endl;std::cout << "$$$..   ..$$$'       '$$$..   ..$$$'      '$$$..   ..$$$'     '$$$." << std::endl;
+    std::cout << "  '$$$$$$$'             '$$$$$$$'            '$$$$$$$'           '$$$\033[37m" << std::endl << std::endl;
 }
 
-void Chat::CAT() 
+void Chat::show_all_users_name() const
 {
+	std::cout << "-#-#-#-#-Users-#-#-#-#-" << std::endl;
+	for (auto& user : AllUsers_)
+	{
+		std::cout << user.getUserName();
+		if (currentUser_->get_user_login() == user.get_user_login())
+		{
+			if (language_ == '1') { std::cout << "\033[33m(Я)\033[37m"; }
+			else { std::cout << "\033[33m(me)\033[37m"; }
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "-#-#-#-#-#-#-#-#-#-#" << std::endl;
+}
 
+void Chat::add_message()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251); 
+	setlocale(LC_ALL, "Russian");
+	std::string to;
+	std::string text;
 
-	std::cout << "____________________________________________________" << std::endl;
-	std::cout << "___________________$$____________$$" << std::endl;std::cout << "__________________$___$________$___$" << std::endl;
-	std::cout << "__________________$_____$$$$$$_____$" << std::endl;std::cout << "__________________$____sss___sss____$" << std::endl;
-	std::cout << "__________________$____іі_____іі_____$" << std::endl;std::cout << "_________________$_______$$$________$" << std::endl;
-	std::cout << "_____$$$$$$$$_____$_______$________$" << std::endl;std::cout << "___$$________$_______$$_________$$" << std::endl;
-	std::cout << "____$_________$_____$___$$$$$$___$" << std::endl;std::cout << "_______$______$____$__$________$__$" << std::endl;
-	std::cout << "_______$_____$____$__$__________$__$" << std::endl;std::cout << "______$____$___$$$$__$__________$__$$$$" << std::endl;
-	std::cout << "_____$___$____$____$__$________$___$___$" << std::endl;std::cout << "_____$__$_____$____$__$________$__$____$" << std::endl;
-	std::cout << "____$___$______$____$__$____$_$__$____$" << std::endl;std::cout << "______$__$______$____$___$_$_____$___$" << std::endl;
-	std::cout << "_______$___$$$$$_$___$___$_$____$___$" << std::endl;std::cout << "__________$$$$$_$____$____$_____$____$" << std::endl;
-	std::cout << "________________$$$_$_____$______$_$$$" << std::endl;std::cout << "_____________________$$$$___$$$$$" << std::endl;
-	std::cout << "____________________________________________________" << std::endl << std::endl;std::cout << "__________не_расстаивайся_пробуй_еще_раз_________" << std::endl;
-std::cout << "____________________________________________________" << std::endl;
+	if (language_ == '1') {std::cout << "\033[33m Кому (Имя пользователя):\033[37m";}
+	else {std::cout << "\033[33m To (User Name):\033[37m";}
+
+	std::cin >> to;
+
+	if (language_ == '1') {std::cout << "\033[33m Текст: \033[37m";}
+	else{std::cout << "\033[33m text: \033[37m";}
+
+	std::cin.ignore();
+	getline(std::cin, text);
+
+	if (!(to == "всем" || get_user_by_name(to)))
+	{
+		if (language_ == '1') {std::cout << "\033[31m Ошибка отправки сообщения! Пользователь " << to << " не найден! \033[37m" << std::endl;}
+		else{std::cout << "\033[33m Error sending a message! User " << to << " not found! \033[37m" << std::endl;}
+		return;
+	}
+	if (to == "всем")
+		messages_.push_back(Message{ currentUser_->get_user_login(), "всем", text });
+	else
+		messages_.push_back(Message{ currentUser_->get_user_login(), get_user_by_name(to)->get_user_login(), text });
+}
+
+void Chat::add_message(char a)
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251); 
+	setlocale(LC_ALL, "Russian");
+	std::string to, text;
+
+	if (language_ == '1') {std::cout << "\033[33m отправить всем пользователям:\033[37m";}
+	else {std::cout << "\033[33 msend to all users:\033[37m";}
+
+	to = "всем";
+
+	if (language_ == '1') {std::cout << "\033[33m Текст:\033[37m ";}
+	else{std::cout << "\033[33m text:\033[37m ";}
+
+	std::cin.ignore();
+	getline(std::cin, text);
+	messages_.push_back(Message{ currentUser_->get_user_login(), "всем", text });
+}
+
+void Chat::shout() 
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251); 
+	setlocale(LC_ALL, "Russian");
+
+	std::string to = "всем";
+	std::string text;
+
+	if (language_ == '1') {std::cout << "\033[33m Наорать на всех пользователей:\033[37m";}
+	else {std::cout << "\033[33m Yell at all users:\033[37m";}
+
+	if (language_ == '1') {std::cout << "\033[33m Текст: \033[37m";}
+	else{std::cout << "\033[33m text:\033[37m ";}
+
+	std::cin.ignore();
+	getline(std::cin, text);
+
+	for (int x = 0; x < size(text); x++) {
+		if (text[x] == ' ')
+			text[x] = text[x];
+		else
+		text[x] = toupper(text[x]);
+	}
+	text = "\033[31m!!!!!!!!!!!!!!!!!!!!!!" + text + "!!!!!!!!!!!!!!!!!!!!!!\033[37m";
+	messages_.push_back(Message{ currentUser_->get_user_login(), "всем", text }); 
+}
+void Chat::menu_message()
+{
+char operation;
+
+	if (language_ == '1') {std::cout << "\033[33m\tМеню: (1) Отправить сообщение кому то | (2) Написать сообщение всем | (3) Наорать на всех в чате | (0) Выйти\033[37m";}
+	else{std::cout << "\033[33m\tMenu: (1) Send a message to someone | (2) Write a message to everyone | (3) Yell at everyone in the chat | (0) Log out\033[37m";}
+
+	std::cout << std::endl;
+	std::cin >> operation;
+
+switch (operation){
+	case '1':
+		add_message();
+		break;
+	case '2':
+		add_message(operation);
+		break;
+	case '3':
+		shout();
+		break;
+	case'0':
+	currentUser_ = nullptr;
+		break;
+	default:
+		if (language_ == '1') {std::cout << "\033[33m Неизвестный выбор, выберите действие от 1, 2, 3, 0\033[37m" << std::endl;}
+		else{std::cout << "\033[33m Unknown selection, select action from 1, 2, 3, 0\033[37m" << std::endl;}
+	break;
+}
+}
+void Chat::CAT()
+{
+	std::cout << "\033[37m";
+	std::cout << "____________________________________________________" << std::endl; std::cout << "                  .$$.          .$$." << std::endl; std::cout << "                  $   $.      .$   $" << std::endl;
+	std::cout << "                  $    :YYYYYY:    $." << std::endl; std::cout << "                  $    .s.   .s.   '$" << std::endl; std::cout << "                  $   'іі.   .іі'  '$" << std::endl;
+	std::cout << "                  $.     '$'       .$" << std::endl; std::cout << "    .$$$$$$$$.    '$.   ._$_.     .$" << std::endl; std::cout << "   $$        $.     :$$         $$:" << std::endl;
+	std::cout << "   '$....,   '$    .$' .$$$$$$. '$." << std::endl; std::cout << "       $'    .$   .$' $        $  $." << std::endl; std::cout << "      .$    .$'  .$' $          $  $." << std::endl;
+	std::cout << "      $'   $'  $$$$. $.        .$  $$$$." << std::endl; std::cout << "     $' .$'   $'   $ '$       .$' .$   $" << std::endl; std::cout << "    :$  $'    $.   $  $       $' $    $" << std::endl;
+	std::cout << "     $. $.    '$.  '$.'$.  .$    $   .$'" << std::endl; std::cout << "      $. $      $.  '$   $ $     $   $'" << std::endl; std::cout << "       $. '$$$$$.$   $   $.$    $   $:" << std::endl;
+	std::cout << "         '$$$$$'$'   $   '$'    $    $" << std::endl; std::cout << "                $$$.$'   .$.    '$.$$$" << std::endl; std::cout << "                    '$$$$' '$$$$$'" << std::endl;
+	std::cout << "____________________________________________________\033[31m" << std::endl << std::endl;
+
+	if (language_ == '1') { std::cout << "__________не_расстраивайся_пробуй_еще_раз_________" << std::endl; }
+	else { std::cout << "______________Don't_worry,_try_again______________" << std::endl; }
+
+	std::cout << "____________________________________________________\033[37m" << std::endl;
+}
+void Chat::NOTCAT() 
+{
+	std::cout << "\033[37m";
+	std::cout << "____________________________________________________" << std::endl << std::endl; std::cout << "           .$      $." << std::endl; std::cout << "           * '*****' *" << std::endl;
+	std::cout << "          *  (O) (O) *" << std::endl; std::cout << "         **     V    **" << std::endl; std::cout << "         **          **" << std::endl; std::cout << "         **          **" << std::endl;
+	std::cout << "          *.        .*" << std::endl; std::cout << "           ***''''***" << std::endl; std::cout << "____________________________________________________\033[31m" << std::endl << std::endl;
+
+	if (language_ == '1') { std::cout << "__________не_расстраивайся_пробуй_еще_раз_________" << std::endl; }
+	else { std::cout << "______________Don't_worry,_try_again______________\033[37m" << std::endl; }
 }
