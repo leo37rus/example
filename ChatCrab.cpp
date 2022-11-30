@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "ChatCrab.h"
 #include "string"
 #include<vector>
@@ -40,10 +40,10 @@ void Chat::show_login_menu()
 			std::cout << "1 - зарегистрироваться" << std::endl;
 			std::cout << "2 - войти в чат" << std::endl;
 			std::cout << "0 - закрыть чат\033[37m" << std::endl << std::endl;}
-		else {std::cout << "\033[33m hello, do you want to log in or register?" << std::endl;
-			std::cout << "1 - register" << std::endl;
-			std::cout << "2 - log in to the chat" << std::endl;
-			std::cout << "0 - close the chat\033[37m" << std::endl << std::endl;}
+		else {std::cout << "\033[33m Hello, do you want to login or register?" << std::endl;
+			std::cout << "1 - Register" << std::endl;
+			std::cout << "2 - Login to the chat" << std::endl;
+			std::cout << "0 - Close the chat\033[37m" << std::endl << std::endl;}
 
 		std::cin >> operation;
 		
@@ -112,7 +112,7 @@ void Chat::registration_in_the_chat()
 	std::string password;
 	std::string name;
 
-	if (language_ == '1') {std::cout << "\033[33mвы выбрали 1 - зарегистрироваться" << std::endl;
+	if (language_ == '1') {std::cout << "\033[33mВы выбрали 1 - зарегистрироваться" << std::endl;
 		std::cout << "\033[34m введите ваш логин\033[37m" << std::endl;}
 	else {std::cout << "\033[33m you have chosen 1 - register" << std::endl;
 		std::cout << "\033[34m enter your login\033[37m" << std::endl;}
@@ -130,17 +130,17 @@ void Chat::registration_in_the_chat()
 		if (get_user_by_name(name) || name == "всем")
 		{throw UserNameExp();}
 
-		if (language_ == '1') {std::cout << "\033[34m введите ваш пароль\033[37m" << std::endl;}
-		else{std::cout << "\033[34m enter your password\033[37m" << std::endl;}
+		if (language_ == '1') {std::cout << "\033[34m Введите ваш пароль\033[37m" << std::endl;}
+		else{std::cout << "\033[34m Enter your password\033[37m" << std::endl;}
 
 		std::cin >> password;
 
 		User user = User(login, password, name);
 		AllUsers_.push_back(user);
 
-		if (language_ == '1') {std::cout << "\033[33m количество пользователей " << size(AllUsers_) << "\033[37m" << std::endl;
+		if (language_ == '1') {std::cout << "\033[33m ] Количество пользователей " << size(AllUsers_) << "\033[37m" << std::endl;
 		}
-		else{std::cout << "\033[33m number of users " << size(AllUsers_) <<"\033[37m" << std::endl; }
+		else{std::cout << "\033[33m Number of users " << size(AllUsers_) <<"\033[37m" << std::endl; }
 
 		currentUser_ = std::make_shared<User>(user);
 }
@@ -148,7 +148,7 @@ void Chat::registration_in_the_chat()
 void Chat::log_ln_to_the_chat()
 {
 	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251); 
+	SetConsoleOutputCP(1251);
 	std::string login, password;
 	char operation;
 
@@ -184,7 +184,7 @@ void Chat::log_ln_to_the_chat()
 void Chat::show_chat() const
 {
 	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251); 
+	SetConsoleOutputCP(1251);
 	std::string from;
 	std::string to;
 	std::cout << "\033[31m\n";
@@ -249,7 +249,7 @@ void Chat::show_all_users_name() const
 void Chat::add_message()
 {
 	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251); 
+	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "Russian");
 	std::string to;
 	std::string text;
@@ -280,12 +280,12 @@ void Chat::add_message()
 void Chat::add_message(char a)
 {
 	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251); 
+	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "Russian");
 	std::string to, text;
 
-	if (language_ == '1') {std::cout << "\033[33m отправить всем пользователям:\033[37m";}
-	else {std::cout << "\033[33 msend to all users:\033[37m";}
+	if (language_ == '1') {std::cout << "\033[33m Отправить всем пользователям:\033[37m";}
+	else {std::cout << "\033[33 Send to all users:\033[37m";}
 
 	to = "всем";
 
@@ -300,7 +300,7 @@ void Chat::add_message(char a)
 void Chat::shout() 
 {
 	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251); 
+	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "Russian");
 
 	std::string to = "всем";

@@ -33,7 +33,7 @@ class Chat
 	std::shared_ptr<User> get_user_by_name(const std::string& name) const;
 public:
 	void start() { WorkChat_ = true; }
-	bool isChatWork() const { return WorkChat_; }
+    bool isChatWork() const { return WorkChat_; }
 	std::shared_ptr<User> getCurrentUser() const { return currentUser_; }
 	void show_login_menu();
 	void showUserMenu();
