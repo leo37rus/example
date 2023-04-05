@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include<vector>
 #include<exception>
 #include<memory>
@@ -44,6 +44,6 @@ public:
 	void CAT();
 	void NOTCAT();
 	void menu_message();
-	void set_language(char language) { language_ = language; };
-	char get_language() { return language_; };
+	void set_language(char language) { language_ = language; }
+	char get_language() { return language_; }
 };
