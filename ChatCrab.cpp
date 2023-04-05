@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "ChatCrab.h"
 #include "string"
 #include<vector>
@@ -12,7 +12,7 @@ std::shared_ptr<User> Chat::get_user_by_login(const std::string& login) const
 {
 	for (auto& user : AllUsers_)
 	{
-		if (login == user.get_user_login())
+		if (login == user.get_login())
 			return std::make_shared<User>(user);
 	}
 	return nullptr;
@@ -181,7 +181,7 @@ void Chat::log_ln_to_the_chat()
 
 		currentUser_ = get_user_by_login(login);
 
-		if (currentUser_ == nullptr || (password != currentUser_->getUserPassword()))
+		if (currentUser_ == nullptr || (password != currentUser_->getPassword()))
 		{
 			if (language_ == '1') {
 				std::cout << "\033[33m Неверный логин или пароль!!!" << std::endl;
@@ -224,18 +224,18 @@ void Chat::show_chat() const
 
 	for (auto& mess : messages_)
 	{
-		if (currentUser_->get_user_login() == mess.getFrom() || currentUser_->get_user_login() == mess.getTo() || mess.getTo() == "всем")
+		if (currentUser_->get_login() == mess.getFrom() || currentUser_->get_login() == mess.getTo() || mess.getTo() == "всем")
 		{
-			if (language_ == '1') { from = (currentUser_->get_user_login() == mess.getFrom()) ? "меня" : get_user_by_login(mess.getFrom())->getUserName(); }
-			else { from = (currentUser_->get_user_login() == mess.getFrom()) ? "me" : get_user_by_login(mess.getFrom())->getUserName(); }
+			if (language_ == '1') { from = (currentUser_->get_login() == mess.getFrom()) ? "меня" : get_user_by_login(mess.getFrom())->getUserName(); }
+			else { from = (currentUser_->get_login() == mess.getFrom()) ? "me" : get_user_by_login(mess.getFrom())->getUserName(); }
 
 			if (language_ == '1') {
 				if (mess.getTo() == "всем") { to = "всем"; }
-				else { to = (currentUser_->get_user_login() == mess.getTo()) ? "Я" : get_user_by_login(mess.getTo())->getUserName(); }
+				else { to = (currentUser_->get_login() == mess.getTo()) ? "Я" : get_user_by_login(mess.getTo())->getUserName(); }
 			}
 			else {
 				if (mess.getTo() == "всем") { to = "all"; }
-				else { to = (currentUser_->get_user_login() == mess.getTo()) ? "Я" : get_user_by_login(mess.getTo())->getUserName(); }
+				else { to = (currentUser_->get_login() == mess.getTo()) ? "Я" : get_user_by_login(mess.getTo())->getUserName(); }
 			}
 
 			if (language_ == '1') {
@@ -259,7 +259,7 @@ void Chat::show_all_users_name() const
 	for (auto& user : AllUsers_)
 	{
 		std::cout << user.getUserName();
-		if (currentUser_->get_user_login() == user.get_user_login())
+		if (currentUser_->get_login() == user.get_login())
 		{
 			if (language_ == '1') { std::cout << "\033[33m(Я)\033[37m"; }
 			else { std::cout << "\033[33m(me)\033[37m"; }
@@ -295,9 +295,9 @@ void Chat::add_message()
 		return;
 	}
 	if (to == "всем")
-		messages_.push_back(Message{ currentUser_->get_user_login(), "всем", text });
+		messages_.emplace_back(currentUser_->get_login(), "всем", text);
 	else
-		messages_.push_back(Message{ currentUser_->get_user_login(), get_user_by_name(to)->get_user_login(), text });
+		messages_.emplace_back(currentUser_->get_login(), get_user_by_name(to)->get_login(), text);
 }
 
 void Chat::add_message(char a)
@@ -309,15 +309,14 @@ void Chat::add_message(char a)
 
 	if (language_ == '1') { std::cout << "\033[33m Отправить всем пользователям:\033[37m"; }
 	else { std::cout << "\033[33 Send to all users:\033[37m"; }
-
-	to = "всем";
+	
 
 	if (language_ == '1') { std::cout << "\033[33m Текст:\033[37m "; }
 	else { std::cout << "\033[33m text:\033[37m "; }
 
 	std::cin.ignore();
 	getline(std::cin, text);
-	messages_.push_back(Message{ currentUser_->get_user_login(), "всем", text });
+	messages_.emplace_back(currentUser_->get_login(), "всем", text);
 }
 
 void Chat::shout()
@@ -325,8 +324,7 @@ void Chat::shout()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "Russian");
-
-	std::string to = "всем";
+	
 	std::string text;
 
 	if (language_ == '1') { std::cout << "\033[33m Наорать на всех пользователей:\033[37m"; }
@@ -338,14 +336,12 @@ void Chat::shout()
 	std::cin.ignore();
 	getline(std::cin, text);
 
-	for (int x = 0; x < size(text); x++) {
-		if (text[x] == ' ')
-			text[x] = text[x];
-		else
-			text[x] = toupper(text[x]);
+	for (int x = 0; x < size(text); x++) 
+	{
+		if (text[x] = toupper(text[x]));		
 	}
 	text = "\033[31m!!!!!!!!!!!!!!!!!!!!!!" + text + "!!!!!!!!!!!!!!!!!!!!!!\033[37m";
-	messages_.push_back(Message{ currentUser_->get_user_login(), "всем", text });
+	messages_.emplace_back(currentUser_->get_login(), "всем", text);
 }
 void Chat::menu_message()
 {
@@ -403,3 +399,4 @@ void Chat::NOTCAT()
 	if (language_ == '1') { std::cout << "__________не_расстраивайся_пробуй_еще_раз_________" << std::endl; }
 	else { std::cout << "______________Don't_worry,_try_again______________\033[37m" << std::endl; }
 }
+
